@@ -1,26 +1,36 @@
-import React from 'react';
-import { render, fireEvent } from '@testing-library/react-native';
-import { SearchScreen } from '../SearchScreen';
+// ind.test.ts
 
-describe('SearchScreen', () => {
+import { createLogger, LoggerWrapper } from './ind';
+import logger from './ind';
 
-  test('displays search results', async () => {
-    const results = [{title: 'Result 1'}, {title: 'Result 2'}];
-    
-    const { getByText } = render(<SearchScreen results={results} />);
-    
-    expect(getByText('Result 1')).toBeTruthy();
-    expect(getByText('Result 2')).toBeTruthy();
+describe('logger module', () => {
+
+  describe('createLogger', () => {
+    it('returns a logger object', () => {
+      const logger = createLogger('test');
+      expect(logger).toHaveProperty('info');
+      expect(logger).toHaveProperty('warn');
+    });
   });
 
-  test('calls onSearch when search button pressed', async () => {
-    const onSearch = jest.fn();
-    
-    const { getByTestId } = render(<SearchScreen onSearch={onSearch} />);
-    
-    fireEvent.press(getByTestId('search-button'));
-    
-    expect(onSearch).toHaveBeenCalledTimes(1);
+  describe('default export', () => {
+    it('exports a logger instance', () => {  
+      expect(logger).toHaveProperty('info');
+    });
+  });
+
+  describe('named exports', () => {
+    it('exports createLogger', () => {
+      expect(createLogger).toBeDefined();
+    });
+
+    it('exports LoggerWrapper', () => {
+      expect(LoggerWrapper).toBeDefined();
+    });
+  });
+
+  describe('integration', () => {
+    // tests for integration with other modules
   });
 
 });
