@@ -1,31 +1,26 @@
-import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-import Ind from "../ind";
+import React from 'react';
+import { render, fireEvent } from '@testing-library/react-native';
+import { SearchScreen } from '../SearchScreen';
 
-describe("Ind", () => {
-  test("renders without crashing", () => {
-    render(<Ind />);
-    expect(screen.getByTestId("ind")).toBeInTheDocument();
+describe('SearchScreen', () => {
+
+  test('displays search results', async () => {
+    const results = [{title: 'Result 1'}, {title: 'Result 2'}];
+    
+    const { getByText } = render(<SearchScreen results={results} />);
+    
+    expect(getByText('Result 1')).toBeTruthy();
+    expect(getByText('Result 2')).toBeTruthy();
   });
 
-  test("increments count when button clicked", () => {
-    render(<Ind />);
-    const button = screen.getByRole("button");
-    userEvent.click(button);
-    expect(screen.getByTestId("count")).toHaveTextContent("1");
+  test('calls onSearch when search button pressed', async () => {
+    const onSearch = jest.fn();
+    
+    const { getByTestId } = render(<SearchScreen onSearch={onSearch} />);
+    
+    fireEvent.press(getByTestId('search-button'));
+    
+    expect(onSearch).toHaveBeenCalledTimes(1);
   });
 
-  test("decrements count when button clicked", () => {
-    render(<Ind count={1} />);
-    const button = screen.getByRole("button");
-    userEvent.click(button);
-    expect(screen.getByTestId("count")).toHaveTextContent("0");
-  });
-
-  test("count does not go below 0", () => {
-    render(<Ind count={0} />);
-    const button = screen.getByRole("button");
-    userEvent.click(button);
-    expect(screen.getByTestId("count")).toHaveTextContent("0");
-  });
 });
